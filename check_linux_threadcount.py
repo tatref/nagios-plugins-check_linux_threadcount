@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#Original version by kadirsert https://github.com/kadirsert/nagios-plugins-check_linux_threadcount
+#updated by Nozlaf to include perfdata so we can make pretty graphs
+
 import sys
 import os
 import argparse
@@ -27,12 +30,15 @@ if args.pid_cmd_regex is not None:
     for pid_num in pid_list.strip().splitlines():
         thread_count = thread_count + int(os.popen('ls /proc/' + pid_num + '/task/ |wc -l').read())
 
+perfdata = "threads="+ str(thread_count)+ ";" + str(args.warn) + ";" + str(args.crit) + ";;"
+
+        
 if (thread_count >= int(args.crit)):
-    print "Thread count is in CRITICAL state: (" + str(thread_count)  + ")"
+    print "Thread count is in CRITICAL state: (" + str(thread_count)  + ") |" + str(perfdata)
     sys.exit(2)
 elif (thread_count >= int(args.warn)):
-    print "Thread count is in WARNING state: (" + str(thread_count)  + ")"
+    print "Thread count is in WARNING state: (" + str(thread_count)  + ") |" + str(perfdata)
     sys.exit(1)
 else:
-    print "Thread count is OK"
+    print "Thread count is OK |" + str(perfdata)
     sys.exit(0)
