@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-#Original version by kadirsert https://github.com/kadirsert/nagios-plugins-check_linux_threadcount
-#updated by Nozlaf to include perfdata so we can make pretty graphs
-
+from __future__ import print_function
 import sys
 import os
 import argparse
@@ -15,7 +12,7 @@ parser.add_argument("-pr", "--pid_cmd_regex", help="Identify process(es) by usin
 args = parser.parse_args()
 
 if (args.pid_number is None) and (args.pid_file is None) and (args.pid_cmd_regex is None):
-    print "Please provide one of these arguments (--pid_number , --pid_file , --pid_cmd_regex) to identify process pids"
+    print("Please provide one of these arguments (--pid_number , --pid_file , --pid_cmd_regex) to identify process pids")
     sys.exit(3)
 
 if args.pid_number is not None:
@@ -30,15 +27,13 @@ if args.pid_cmd_regex is not None:
     for pid_num in pid_list.strip().splitlines():
         thread_count = thread_count + int(os.popen('ls /proc/' + pid_num + '/task/ |wc -l').read())
 
-perfdata = "threads="+ str(thread_count)+ ";" + str(args.warn) + ";" + str(args.crit) + ";;"
-
         
 if (thread_count >= int(args.crit)):
-    print "Thread count is in CRITICAL state: (" + str(thread_count)  + ") |" + str(perfdata)
+    print("Thread count is in CRITICAL state: ( Threads =", str(thread_count), ")")
     sys.exit(2)
 elif (thread_count >= int(args.warn)):
-    print "Thread count is in WARNING state: (" + str(thread_count)  + ") |" + str(perfdata)
+    print("Thread count is in WARNING state: ( Threads =", str(thread_count), ")")
     sys.exit(1)
 else:
-    print "Thread count is OK |" + str(perfdata)
+    print("Thread count is OK: ( Threads =", str(thread_count), ")")
     sys.exit(0)
