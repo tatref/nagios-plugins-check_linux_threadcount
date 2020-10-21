@@ -28,12 +28,14 @@ if args.pid_cmd_regex is not None:
         thread_count = thread_count + int(os.popen('ls /proc/' + pid_num + '/task/ |wc -l').read())
 
         
+perfdata="thread_count=" + str(thread_count) + ";" + str(args.warn) + ";" + str(args.crit) + ";0"
+
 if (thread_count >= int(args.crit)):
-    print("Thread count is in CRITICAL state: ( Threads =", str(thread_count), ")")
+    print("Thread count is in CRITICAL state: ( Threads =", str(thread_count), ")|", perfdata)
     sys.exit(2)
 elif (thread_count >= int(args.warn)):
-    print("Thread count is in WARNING state: ( Threads =", str(thread_count), ")")
+    print("Thread count is in WARNING state: ( Threads =", str(thread_count), ")|", perfdata)
     sys.exit(1)
 else:
-    print("Thread count is OK: ( Threads =", str(thread_count), ")")
+    print("Thread count is OK: ( Threads =", str(thread_count), ")|", perfdata)
     sys.exit(0)
